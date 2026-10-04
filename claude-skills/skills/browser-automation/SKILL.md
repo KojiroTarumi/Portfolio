@@ -23,6 +23,19 @@ npm i -g @playwright/cli      # または npx で playwright-cli
 playwright-cli --version
 ```
 
+> **このクラウド環境での注意（疎通確認済み）**: `playwright-cli` は同梱 playwright-core が
+> 要求する特定ビルドの Chrome for Testing を起動時にダウンロードしようとするが、
+> プリインストールの Chromium とビルド番号がずれており、かつ外部CDNがプロキシで塞がれているため
+> `playwright-cli open` が失敗することがある。その場合は **プリインストール Chromium を使って
+> Playwright を直接駆動する**フォールバックに切り替える（E2E用途はこちらで十分）:
+> ```bash
+> npm i playwright-core@1.56   # プリインストール chromium-1194 に対応する系統
+> node -e 'const{chromium}=require("playwright-core");(async()=>{const b=await chromium.launch(
+>   {executablePath:"/opt/pw-browsers/chromium-1194/chrome-linux/chrome",headless:true,args:["--no-sandbox"]});
+>   const p=await b.newPage();await p.goto("http://localhost:3000");console.log(await p.title());await b.close();})()'
+> ```
+> ローカル開発機で `playwright-cli` のブラウザDLが通る環境なら、下記のCLI操作がそのまま使える。
+
 ## クイックスタート
 
 ```bash

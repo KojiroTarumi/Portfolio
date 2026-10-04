@@ -16,6 +16,8 @@ description: >-
 
 ```bash
 npm install -g ctx7@latest     # または npx ctx7@latest <command>
+ctx7 login                     # 必須。未ログインだと docs/library 取得が HTTP 403 になる
+ctx7 whoami                    # ログイン状態の確認
 ```
 
 claude.ai の Context7 プラグイン（MCP）を有効化する手もある（`docs/bridges.md`）。

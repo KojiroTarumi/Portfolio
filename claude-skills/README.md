@@ -52,6 +52,7 @@ cd claude-skills
 - `docs/integration-report.md` — 既存スキルとの整合性チェック結果と統合方針。
 - `docs/sources.md` — 全スキルの出典リポジトリとライセンス（再構成物の帰属）。
 - `docs/bridges.md` — 外部プラグイン／CLI の有効化手順と事業用プレイブック。
+- `docs/verification.md` — 各CLIの疎通確認結果（実測）と環境依存の回避策。
 
 ## 再構成の考え方
 

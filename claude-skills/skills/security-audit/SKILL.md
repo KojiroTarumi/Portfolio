@@ -59,7 +59,9 @@ Strix は自律エージェントが対象を動的に攻撃し、**実証でき
 ### 前提（OSS CLI 自己ホスト）
 ```bash
 docker info                                   # Docker 稼働確認（初回はサンドボックスimageを取得）
-curl -sSL https://strix.ai/install | bash     # or: pipx install strix-agent
+# strix-agent は Python >= 3.12 が必須。3.11 以前の環境では 3.12 の venv/pipx に隔離する:
+#   python3.12 -m venv ~/.strixenv && ~/.strixenv/bin/pip install strix-agent
+#   （または pipx install --python python3.12 strix-agent / curl -sSL https://strix.ai/install | bash）
 strix --version
 export STRIX_LLM="anthropic/claude-opus-4-8"   # 任意の LiteLLM モデルID
 export LLM_API_KEY="<provider api key>"        # 未設定ならユーザーに依頼。コミット禁止

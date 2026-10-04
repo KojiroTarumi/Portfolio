@@ -17,8 +17,11 @@ description: >-
 ## 前提
 
 ```bash
-pip install graphify        # もしくはリポジトリの手順に従う
-# Node/uv版など配布形態は github.com/Graphify-Labs/graphify を参照
+# PyPI パッケージ名は graphifyy（y が2つ）、コマンドは graphify。
+uv tool install graphifyy     # 推奨（隔離環境）
+# または: pipx install graphifyy / pip install graphifyy
+#   pip 導入時は ~/.local/bin を PATH に（なければ python -m graphify）
+graphify --version
 ```
 
 ## 使い方
