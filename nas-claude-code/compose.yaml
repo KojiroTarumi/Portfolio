@@ -18,4 +18,6 @@ services:
     volumes:
       - /volume1/claude/claude-code/home:/Users/tarumi
       - /volume1/claude/claude-code/bootstrap.sh:/opt/nas-claude/bootstrap.sh:ro
+      # 作業フォルダがすでに NAS 上にある場合は、migrate-to-nas.sh が最後に表示する 1 行をここに足す。例:
+      # - /volume1/claude/projects/machibal-app:/Volumes/claude/projects/machibal-app
     mem_limit: 4g

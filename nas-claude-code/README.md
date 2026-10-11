@@ -33,8 +33,9 @@ DXP2800 / Docker コンテナ claude-code（node:22-bookworm）
 RC_NAME="街バル (NAS)" ./migrate-to-nas.sh ~/.claude/projects/<フォルダ>/<セッションID>.jsonl
 ```
 
+- 作業フォルダが**すでに NAS 上**（`/Volumes/claude/...`）にある場合はコピーしない。代わりに `compose.yaml` の `volumes` に足す 1 行が表示されるので、それを追加する（コンテナからも Mac と同じパスに見えるようにするため）
 - `node_modules` と `.next` はコピーしない（Mac 用のネイティブ部品が入っているため。NAS 側で入れ直す）
-- 最後に、コピーした `.env` 系ファイルの変数名が一覧表示される。**AWS の強い権限の鍵が入っていたら NAS 側から消す**
+- `.env` 系ファイルは**既定ではコピーしない**。変数名の一覧（値は出さない）だけを表示する。必要なものは、作業に要る弱い権限の値だけを NAS 側に手で用意する（どうしてもそのままコピーするなら `COPY_ENV=1`）
 - `~/.claude/settings.json` は `settings.mac.json` として置く。コンテナはそこから `permissions` と `model` だけを取り込む（フックは Mac 前提なので持ち込まない）
 
 > **再実行の注意**：NAS 側で作業を始めた後にもう一度実行すると、Mac の古い内容で上書きされる。再実行は NAS で作業する前だけにする。
@@ -67,7 +68,7 @@ tmux -S /tmp/claude.tmux attach
 
 ```bash
 source ~/.nas-claude/config && cd "$PROJECT_DIR"
-npm ci && npx prisma generate && npm run build
+rm -rf node_modules && npm ci && npx prisma generate && npm run build
 ```
 
 ## 4. iPad で確認（入院前に必ず）
@@ -80,6 +81,7 @@ Claude アプリ → **Code** → 一覧に「街バル (NAS)」（緑の点）�
 - [ ] UGOS でコンテナを再起動 → 1〜2 分で同じ会話のままオンラインに戻る
 
 確認が済んだら、**Mac 側では街バルを触らない**（2 か所で編集すると食い違う）。Mac の電源は切ってよい。
+作業フォルダが NAS 上にある場合、`node_modules` は Linux 用に入れ替わっている。退院後に Mac で作業を再開するときは、Mac 側で `rm -rf node_modules && npm ci` をやり直す。
 
 ## 入院中に困ったら
 
@@ -92,5 +94,6 @@ Claude アプリ → **Code** → 一覧に「街バル (NAS)」（緑の点）�
 ## 注意
 
 - コンテナの HOME は `claude` 共有の中にあるので、Duplicati の毎日のバックアップ（暗号化済み）に Claude のログイン情報も含まれる。容量を食う `node_modules` と `.next` は Duplicati のフィルタで除外するとよい
-- コンテナ内の Claude は `/Users/tarumi` 配下（＝NAS の `claude-code/home`）しか触れない。NAS の他の共有フォルダはマウントしていない
+- コンテナ内の Claude が触れるのは、`/Users/tarumi`（＝NAS の `claude-code/home`）と、追加でマウントした作業フォルダだけ。NAS の他のフォルダはマウントしていない
+- Claude Code のログイン情報は `claude-code/home/.claude/` に保存される。退院後に NAS を使わなくなったら、コンテナ内で `/logout` してからコンテナを削除する
 - 処理はすべて NAS の上で動く。会話内容は Remote Control のため Anthropic のサーバーにも保存される（通常のクラウドセッションと同じ扱い）
