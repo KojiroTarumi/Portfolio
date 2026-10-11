@@ -1,0 +1,21 @@
+# UGOS の Docker →「プロジェクト」にそのまま貼り付ける。
+# UGOS は保存パスの .env を読まないので、変数は使わず絶対パスで書く。
+# プロジェクト固有の設定（作業フォルダなど）は home/.nas-claude/config に置き、bootstrap.sh が読む。
+services:
+  claude-code:
+    image: node:22-bookworm
+    container_name: claude-code
+    hostname: dxp2800-claude
+    restart: unless-stopped
+    init: true
+    tty: true
+    stdin_open: true
+    entrypoint: ["/bin/bash", "/opt/nas-claude/bootstrap.sh"]
+    environment:
+      - TZ=Asia/Tokyo
+      # Mac と同じホームのパスにすると、会話履歴（作業フォルダの絶対パスごとに保存）がそのまま開ける
+      - HOME=/Users/tarumi
+    volumes:
+      - /volume1/claude/claude-code/home:/Users/tarumi
+      - /volume1/claude/claude-code/bootstrap.sh:/opt/nas-claude/bootstrap.sh:ro
+    mem_limit: 4g
